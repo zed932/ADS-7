@@ -7,7 +7,7 @@ class Train {
   struct Car {
     bool light; // состояние лампочки
     Car *next;
-    Cagr *prev;
+    Car *prev;
   };
   int countOp; // счетчик шагов (число переходов из вагона в вагон)
   Car *first; // точка входа в поезд (первый вагон)
