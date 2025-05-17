@@ -1,7 +1,6 @@
+// Copyright 2022 NNTU-CS
 #include "train.h"
-#include <cstdlib>
-#include <ctime>
-#include <iostream>
+#include <cstdint>
 
 Train::Train() {
   countOp = 0;
@@ -26,34 +25,32 @@ void Train::addCar(bool light) {
 
 int Train::getLength() {
   countOp = 0;
-  if (first == nullptr) return 0;
 
-  first->light = true;
-  countOp++;
+  while (true) {
+    Car* cursor = first;
+    uint16_t lengthEstimate = 1;
 
-  int length = 1;
-  Car* current = first->next;
-  countOp++;
-
-  while (current != first) {
-    if (current->light) {
-      current->light = false;
-      int steps = 0;
-      Car* temp = current->prev;
+    if (!cursor->light) {
+      cursor->light = true;
       countOp++;
-      while (temp != current) {
-        temp = temp->prev;
-        countOp++;
-        steps++;
-      }
-      return steps + 1;
     }
-    length++;
-    current = current->next;
-    countOp++;
-  }
 
-  return length;
+    cursor = cursor->next;
+    countOp++;
+
+    while (!cursor->light) {
+      cursor = cursor->next;
+      countOp++;
+      lengthEstimate++;
+    }
+
+    cursor->light = false;
+    countOp++;
+
+    if (!first->light) {
+      return lengthEstimate;
+    }
+  }
 }
 
 int Train::getOpCount() {
