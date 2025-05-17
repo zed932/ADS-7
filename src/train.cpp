@@ -1,4 +1,3 @@
-// Copyright 2021 NNTU-CS
 #include "train.h"
 #include <cstdlib>
 #include <ctime>
@@ -32,6 +31,7 @@ int Train::getLength() {
 
   if (!cursor->light) {
     cursor->light = true;
+    countOp++;
   }
 
   cursor = cursor->next;
