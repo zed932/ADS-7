@@ -1,16 +1,10 @@
-// Copyright 2022 NNTU-CS
 #include "train.h"
-#include <cstdint>
 
-Train::Train() {
-  countOp = 0;
-  first = nullptr;
-}
+Train::Train() : countOp(0), first(nullptr) {}
 
 void Train::addCar(bool light) {
-  Car* newCar = new Car{ light, nullptr, nullptr };
-
-  if (first == nullptr) {
+  Car* newCar = new Car{light, nullptr, nullptr};
+  if (!first) {
     newCar->next = newCar;
     newCar->prev = newCar;
     first = newCar;
@@ -25,27 +19,39 @@ void Train::addCar(bool light) {
 
 int Train::getLength() {
   countOp = 0;
-  Car* cursor = first;
-  uint16_t lengthEstimate = 1;
+  if (!first) return 0;
 
-  if (!cursor->light) {
-    cursor->light = true;
-    countOp++;
-  }
-
-  cursor = cursor->next;
+  first->light = true;
   countOp++;
-
-  while (!cursor->light) {
-    cursor = cursor->next;
-    countOp++;
-    lengthEstimate++;
-  }
-
-  cursor->light = false;
+  Car* current = first->next;
   countOp++;
+  int candidate = 1;
 
-  return lengthEstimate;
+  while (true) {
+    if (current->light) {
+      current->light = false;
+      countOp++;
+      int stepsBack = 0;
+      Car* temp = current->prev;
+      countOp++;
+      while (temp != current) {
+        temp = temp->prev;
+        countOp++;
+        stepsBack++;
+      }
+      if (!first->light) {
+        return stepsBack + 1;
+      } else {
+        candidate++;
+        current = first->next;
+        countOp++;
+      }
+    } else {
+      current = current->next;
+      countOp++;
+      candidate++;
+    }
+  }
 }
 
 int Train::getOpCount() {
