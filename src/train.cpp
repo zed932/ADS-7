@@ -25,32 +25,27 @@ void Train::addCar(bool light) {
 
 int Train::getLength() {
   countOp = 0;
+  Car* cursor = first;
+  uint16_t lengthEstimate = 1;
 
-  while (true) {
-    Car* cursor = first;
-    uint16_t lengthEstimate = 1;
+  if (!cursor->light) {
+    cursor->light = true;
+    countOp++;
+  }
 
-    if (!cursor->light) {
-      cursor->light = true;
-      countOp++;
-    }
+  cursor = cursor->next;
+  countOp++;
 
+  while (!cursor->light) {
     cursor = cursor->next;
     countOp++;
-
-    while (!cursor->light) {
-      cursor = cursor->next;
-      countOp++;
-      lengthEstimate++;
-    }
-
-    cursor->light = false;
-    countOp++;
-
-    if (!first->light) {
-      return lengthEstimate;
-    }
+    lengthEstimate++;
   }
+
+  cursor->light = false;
+  countOp++;
+
+  return lengthEstimate;
 }
 
 int Train::getOpCount() {
